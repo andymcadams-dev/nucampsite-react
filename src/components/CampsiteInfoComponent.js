@@ -25,7 +25,7 @@ function RenderCampsite({campsite}) {
     );            
 }
 
-function RenderComments({comments}){
+function RenderComments({comments, addComment, campsiteId}){
         if (comments) {
             return (
                     <div className="col-md-5 m-1">
@@ -41,37 +41,14 @@ function RenderComments({comments}){
                         );
                     })}
                 {/*Task 1*/}    
-                <CommentForm />
+                <CommentForm campsiteId={campsiteId} addComment={addComment} />
                 </div>
             );
         }
         return <div></div>
     }
     
-function CampsiteInfo(props){
-    if(props.campsite){
-        return ( 
-            <div className="container">
-                <div className="row">
-                <div className="col">
-                <Breadcrumb>
-                            <BreadcrumbItem><Link to="/Directory">Directory</Link></BreadcrumbItem>
-                            <BreadcrumbItem active>{props.campsite.name}</BreadcrumbItem>
-                        </Breadcrumb>
-                    <h2>{props.campsite.name}</h2>
-                    <hr />
-                </div>
-            </div>
-                <div className="row">
-                    <RenderCampsite campsite={props.campsite} />
-                    <RenderComments comments={props.comments} />
-                </div>
-            </div>
-        );
-    }
-    return <div />;
-        
-    }
+
 //Task 1
     class CommentForm extends Component {
         constructor(props) {
@@ -83,25 +60,19 @@ function CampsiteInfo(props){
             this.handleSubmit = this.handleSubmit.bind(this);
             this.toggleModal = this.toggleModal.bind(this);
         }
-        handleSubmit(values) {
-            //Task 2
-            console.log('Current state is: ' +JSON.stringify(values));
-            
-            alert(`
-            Rating: ${values.rating}
-            Author: ${values.author}
-            Comments: ${values.text}
-            
-            Thank you for your comment!`);
         
-            this.toggleModal()
+        toggleModal() {
+          this.setState({
+            isModalOpen: !this.state.isModalOpen
+          });
         }
 
-        toggleModal() {
-            this.setState({
-              isModalOpen: !this.state.isModalOpen
-            });
-          }
+        handleSubmit(values) {
+          this.toggleModal();
+          this.props.addComment(this.props.campsiteId, values.rating, values.author, values.text);
+        }
+
+        
         
     render() {
         return(
@@ -175,6 +146,33 @@ function CampsiteInfo(props){
         </React.Fragment>
         )}
 }
-        
+function CampsiteInfo(props){
+  if(props.campsite){
+      return ( 
+          <div className="container">
+              <div className="row">
+              <div className="col">
+              <Breadcrumb>
+                          <BreadcrumbItem><Link to="/Directory">Directory</Link></BreadcrumbItem>
+                          <BreadcrumbItem active>{props.campsite.name}</BreadcrumbItem>
+                      </Breadcrumb>
+                  <h2>{props.campsite.name}</h2>
+                  <hr />
+              </div>
+          </div>
+              <div className="row">
+                  <RenderCampsite campsite={props.campsite} />
+                  <RenderComments 
+                  comments={props.comments} 
+                  addComment={props.addComment}
+                  campsiteId={props.campsite.id}
+                  />
+              </div>
+          </div>
+      );
+  }
+  return <div />;
+      
+  }        
 
 export default CampsiteInfo;
