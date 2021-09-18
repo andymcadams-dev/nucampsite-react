@@ -16,12 +16,12 @@ export const ConfigureStore = () => {
           comments: Comments,
           partners: Partners,
           promotions: Promotions,
-            createForms({
+          ...createForms({
             feedbackForm: InitialFeedback
           })
-        }),
+          }),
         applyMiddleware(thunk, logger)
-    );
-
+        
+    )  
     return store;
-};
+}
